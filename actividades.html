@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Procedimiento de Limpieza | Estandarización por Turnos | Operaciones</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #eef2f9 0%, #e0e8f0 100%);
+            color: #1a2c3e;
+            line-height: 1.5;
+            padding: 2rem 1.8rem;
+        }
+
+        /* Scroll suave y transiciones globales */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        /* Animación de entrada para elementos */
+        @keyframes fadeSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .turno-card, .header, .footer-note, .extra-grid > div {
+            animation: fadeSlideUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+        }
+
+        /* Encabezado profesional */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: linear-gradient(130deg, #1F6E8C, #0E2A3B, #2C3E50);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            display: inline-block;
+            padding-bottom: 0.2rem;
+        }
+
+        .header .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(31, 110, 140, 0.12);
+            backdrop-filter: blur(2px);
+            padding: 0.5rem 1.5rem;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1a4e6b;
+            margin-top: 1rem;
+            border: 1px solid rgba(31, 110, 140, 0.25);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .sub {
+            color: #2c3e50cc;
+            margin-top: 0.75rem;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        /* Grid de turnos */
+        .turnos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Tarjetas mejoradas con transiciones */
+        .turno-card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0,0,0,0.02);
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255,255,255,0.5);
+            backdrop-filter: blur(0px);
+        }
+
+        .turno-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 30px 45px -15px rgba(0, 0, 0, 0.2);
+            border-color: rgba(31, 110, 140, 0.2);
+        }
+
+        .turno-header {
+            padding: 1.3rem 1.8rem;
+            background: #ffffff;
+            border-bottom: 3px solid;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            transition: background 0.2s;
+        }
+
+        .turno-titulo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .turno-titulo i {
+            font-size: 2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .turno-card:hover .turno-titulo i {
+            transform: scale(1.05);
+        }
+
+        .turno-titulo h2 {
+            font-weight: 800;
+            font-size: 1.7rem;
+            letter-spacing: -0.3px;
+        }
+
+        .horario-global {
+            background: #eef2fa;
+            padding: 0.35rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1e4663;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.2px;
+        }
+
+        /* Colores de acento por turno */
+        .turno-manana .turno-header { border-bottom-color: #F39C12; }
+        .turno-tarde .turno-header { border-bottom-color: #2980B9; }
+        .turno-noche .turno-header { border-bottom-color: #2C3E50; }
+
+        .turno-manana .turno-titulo i { color: #F39C12; }
+        .turno-tarde .turno-titulo i { color: #2980B9; }
+        .turno-noche .turno-titulo i { color: #2C3E50; }
+
+        /* Bloques de persona */
+        .persona-bloque {
+            padding: 1.2rem 1.6rem;
+            border-bottom: 1px solid #edf2f7;
+            background: #ffffff;
+            transition: background 0.2s;
+        }
+
+        .persona-bloque:hover {
+            background: #fafdff;
+        }
+
+        .persona-nombre {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 0.9rem;
+        }
+
+        .nombre {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: #eef2f9;
+            padding: 0.25rem 1.1rem;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.2px;
+        }
+
+        .horario-individual {
+            font-size: 0.7rem;
+            background: #f0f3f8;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            color: #2c5282;
+            font-weight: 600;
+        }
+
+        .tareas-lista {
+            list-style: none;
+            margin-top: 0.4rem;
+        }
+
+        .tareas-lista li {
+            margin-bottom: 0.7rem;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: transform 0.1s;
+        }
+
+        .tareas-lista li i {
+            color: #2c7a4d;
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+            min-width: 20px;
+        }
+
+        /* Badges de frecuencia */
+        .badge-freq {
+            background: #ffe6c7;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            margin-left: 8px;
+            color: #b45f06;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .badge-freq-semanal {
+            background: #d9e8f7;
+            color: #1e5a88;
+        }
+
+        .badge-freq-mensual {
+            background: #e0d9f5;
+            color: #5e3c9e;
+        }
+
+        .badge-mensual-especial {
+            background: #d4e2d4;
+            color: #2c6e2c;
+            font-weight: 700;
+        }
+
+        .nota-colaboracion {
+            background: #fef7e0;
+            padding: 0.6rem 1rem;
+            border-radius: 1.2rem;
+            margin: 0.8rem 0 0.2rem 0;
+            font-size: 0.78rem;
+            border-left: 3px solid #f1c40f;
+            transition: all 0.2s;
+        }
+
+        .footer-note {
+            background: rgba(255,255,245,0.95);
+            border-radius: 1.5rem;
+            padding: 1.2rem 2rem;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(31,110,140,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        /* Grid extra profesional */
+        .extra-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minfill(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .info-card {
+            background: #ffffffdd;
+            backdrop-filter: blur(2px);
+            border-radius: 1.5rem;
+            padding: 1rem 1.5rem;
+            border: 1px solid #ffffff;
+            transition: all 0.25s;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.02);
+        }
+
+        .info-card:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 14px 24px -10px rgba(0,0,0,0.1);
+            border-color: #cbdde9;
+        }
+
+        hr {
+            margin: 0.6rem 0;
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, #e2e8f0, transparent);
+        }
+
+        @media (max-width: 780px) {
+            body {
+                padding: 1rem;
+            }
+            .turno-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header h1 {
+                font-size: 1.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-spray-can-sparkles"></i> Plan Integral de Saneamiento</h1>
+        <div class="badge"><i class="fas fa-clipboard-list"></i> Procedimiento Operativo Estandarizado (POE) - Limpieza y Desinfección</div>
+        <div class="sub">Detalle granular por turno, responsable, frecuencia y zonas críticas | Turno Mañana, Tarde, Noche</div>
+    </div>
+
+    <div class="turnos-grid">
+        <!-- ================= TURNO MAÑANA ================= -->
+        <div class="turno-card turno-manana">
+            <div class="turno-header">
+                <div class="turno-titulo">
+                    <i class="fas fa-sun"></i>
+                    <h2>Turno Mañana</h2>
+                </div>
+                <span class="horario-global"><i class="far fa-clock"></i> 06:00 - 14:00 (A, B) · 08:00 - 17:00 (C, D)</span>
+            </div>
+
+            <!-- Persona A -->
+            <div class="persona-bloque">
+                <div class="persona-nombre">
+                    <span class="nombre"><i class="fas fa-user-check"></i> Persona A</span>
+                    <span class="horario-individual"><i class="far fa-hourglass-half"></i> 06:00 → 14:00</span>
+                </div>
+                <ul class="tareas-lista">
+                    <li><i class="fas fa-leaf"></i> Recolección de hojas en perímetro externo de la planta.</li>
+                    <li><i class="fas fa-water"></i> Baldeo de vereda exterior + líneas blancas zona producción (incluye bordes).</li>
+                    <li><i class="fas fa-hand-sparkles"></i> Limpieza de manijas internas/externas de todas las oficinas.</li>
+                    <li><i class="fas fa-handshake"></i> <strong>08:00 - 10:00 (con C y D):</strong> Limpieza últimos racks despacho + bordes, recepción (piso y bordes). Baldea pista y piso junto a C y D.</li>
+                    <li><i class="fas fa-utensils"></i> A partir 10:00: limpieza diaria del comedor.</li>
+                    <li><i class="fas fa-trash-alt"></i> Recoge la basura general (diario).</li>
+                    <li><i class="fas fa-chalkboard-user"></i> Días variables: limpieza de racks junto a persona C (según necesidad).</li>
+                </ul>
+            </div>
+
+            <!-- Persona B -->
+            <div class="persona-bloque">
+                <div class="persona-nombre">
+                    <span class="nombre"><i class="fas fa-building"></i> Persona B</span>
+                    <span class="horario-individual"><i class="far fa-hourglass-half"></i> 06:00 → 14:00</span>
+                </div>
+                <ul class="tareas-lista">
+                    <li><i class="fas fa-chalkboard"></i> Limpieza completa de todas las oficinas (escritorios, superficies, pisos, vaciado papeleras).</li>
+                </ul>
+                <div class="nota-colaboracion"><i class="fas fa-info-circle"></i> Garantiza presentación ejecutiva y orden en áreas administrativas.</div>
+            </div>
+
+            <!-- Personas C y D (8 a 5) -->
+            <div class="persona-bloque">
+                <div class="persona-nombre">
+                    <span class="nombre"><i class="fas fa-users"></i> Personas C & D</span>
+                    <span class="horario-individual"><i class="far fa-hourglass-half"></i> 08:00 → 17:00</span>
+                </div>
+                <ul class="tareas-lista">
+                    <li><i class="fas fa-brush"></i> <strong>08:00-10:00 (con A):</strong> Limpieza racks despacho y bordes; recepción piso y bordes. Persona C limpia residuos sólidos, D baldea entre racks y barre polillas/moscas.</li>
+                    <li><i class="fas fa-dumpster"></i> Persona C: <span class="badge-freq">Tachos residuos sólidos 2 veces/semana</span>.</li>
+                    <li><i class="fas fa-hand-sparkles"></i> Persona D: Trapeo completo zona producción, barre rincón a rincón (diario).</li>
+                    <li><i class="fas fa-restroom"></i> Persona D: Limpieza total de baños diaria (puertas, paredes, piso, lavadero).</li>
+                    <li><i class="fas fa-broom"></i> Limpieza de racks (A y C algunos días). Paredes despacho / cortinas según suciedad (C y D o solo D mientras A y C avanzan).</li>
+                    <li><i class="fas fa-trash"></i> <strong>11:30 AM:</strong> Persona C o D recoge basura (turno rotativo).</li>
+                    <li><i class="fas fa-utensils"></i> Persona C: <span class="badge-freq-mensual">2 veces al mes</span> limpia paredes externas del comedor.</li>
+                </ul>
+                <div class="nota-colaboracion"><i class="fas fa-clock"></i> De 14:00 a 17:00 (post salida de A): C y D limpian racks ambos; C baño de despacho, D recoge basura.</div>
+            </div>
+        </div>
+
+        <!-- ================= TURNO TARDE ================= -->
+        <div class="turno-card turno-tarde">
+            <div class="turno-header">
+                <div class="turno-titulo">
+                    <i class="fas fa-cloud-sun"></i>
+                    <h2>Turno Tarde</h2>
+                </div>
+                <span class="horario-global"><i class="far fa-clock"></i> 14:00 - 22:00 (E, F) · C y D hasta 17:00</span>
+            </div>
+
+            <div class="persona-bloque">
+                <div class="persona-nombre">
+                    <span class="nombre"><i class="fas fa-mop"></i> Personas E & F</span>
+                    <span class="horario-individual"><i class="far fa-hourglass-half"></i> 14:00 → 22:00</span>
+                </div>
+                <ul class="tareas-lista">
+                    <li><i class="fas fa-water"></i> Persona E: baldea y barre vereda externa.</li>
+                    <li><i class="fas fa-dragon"></i> Persona F: trapea toda la planta de producción (pisos completos).</li>
+                    <li><i class="fas fa-eye"></i> Inspección activa en materia prima, producción, despacho → limpieza correctiva inmediata.</li>
+                    <li><i class="fas fa-warehouse"></i> Limpieza diaria de recepción (incluye bordes) desde las 16:30.</li>
+                    <li><i class="fas fa-brush"></i> Limpieza integral: comedor, cortinas, compuertas, paredes de despacho/producción, bordes, columnas.</li>
+                    <li><i class="fas fa-tint"></i> Baldeo zona lavadora (si disponible) y zona de pesaje.</li>
+                    <li><i class="fas fa-stone"></i> Arrimar piedras (solo si necesidad operativa).</li>
+                    <li><span class="badge-freq-semanal"><i class="fas fa-calendar-week"></i> 1 vez/semana:</span> Lavado de palet (tarimas).</li>
+                    <li><i class="fas fa-restroom"></i> Limpieza de baños (turno tarde).</li>
+                    <li><i class="fas fa-car"></i> Barrido estacionamiento y zona de montacargas.</li>
+                </ul>
+                <div class="nota-colaboracion"><i class="fas fa-users"></i> E y F aseguran estándares de limpieza en áreas críticas de operación.</div>
+            </div>
+
+            <div class="persona-bloque">
+                <div class="persona-nombre">
+                    <span class="nombre"><i class="fas fa-exchange-alt"></i> Apoyo C y D (hasta 17:00)</span>
+                    <span class="horario-individual">14:00 - 17:00</span>
+                </div>
+                <ul class="tareas-lista">
+                    <li><i class="fas fa-layer-group"></i> Limpieza profunda de racks (ambos).</li>
+                    <li><i class="fas fa-toilet"></i> Persona C: limpia baño de despacho.</li>
+                    <li><i class="fas fa-recycle"></i> Persona D: recogida final de basura.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ================= TURNO NOCHE ================= (con tarea mensual de tachos MP y Prod) -->
+        <div class="turno-card turno-noche">
+            <div class="turno-header">
+                <div class="turno-titulo">
+                    <i class="fas fa-moon"></i>
+                    <h2>Turno Noche</h2>
+                </div>
+                <span class="horario-global"><i class="far fa-clock"></i> 22:30 - 06:00</span>
+            </div>
+
+            <div class="persona-bloque">
+                <div class="persona-nombre">
+                    <span class="nombre"><i class="fas fa-users"></i> Personas G & H</span>
+                    <span class="horario-individual"><i class="far fa-hourglass-half"></i> 22:30 → 06:00</span>
+                </div>
+                <ul class="tareas-lista">
+                    <li><i class="fas fa-industry"></i> 22:30: baldeo completo zona materia prima → posteriormente producción (lavadora) completa y despacho.</li>
+                    <li><i class="fas fa-broom"></i> Persona G: limpieza de todos los <strong>smipaks</strong> (maquinaria/equipos).</li>
+                    <li><i class="fas fa-truck"></i> Persona H: barre y riega zona estacionamiento de trailers.</li>
+                    <li><i class="fas fa-restroom"></i> Persona G: una vez terminado lo anterior, limpia el baño.</li>
+                    <li><i class="fas fa-trash-alt"></i> Persona H: recoge basura general del turno noche.</li>
+                    <li><i class="fas fa-trash-restore"></i> <strong>Limpieza especial mensual:</strong> <span class="badge-freq-mensual badge-mensual-especial"><i class="fas fa-calendar-alt"></i> 1 vez al mes</span> Se lavan todos los tachos de materia prima y producción (desinfección profunda).</li>
+                </ul>
+                <div class="nota-colaboracion"><i class="fas fa-moon"></i> Turno noctino garantiza áreas impecables para arranque del turno mañana. Incluye tarea mensual de tachos MP y producción.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección adicional de hitos y frecuencias -->
+    <div class="extra-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 1.5rem; margin-top: 1.2rem;">
+        <div class="info-card">
+            <i class="fas fa-chart-line" style="color:#2c7a4d; font-size: 1.3rem;"></i>
+            <h4 style="margin: 8px 0 6px;">Resumen Turno Mañana</h4>
+            <p style="font-size: 0.8rem;">06:00 A (exteriores/manijas) · 08:00 A+C+D racks+recepción · 10:00 A comedor · 11:30 recogida basura · 14:00 A se retira, C y D racks hasta 17:00.</p>
+        </div>
+        <div class="info-card">
+            <i class="fas fa-chart-line" style="color:#2980B9;"></i>
+            <h4 style="margin: 8px 0 6px;">Turno Tarde Claves</h4>
+            <p style="font-size: 0.8rem;">14:00 E/F inician vereda/trapeado · 16:30 limpieza recepción + bordes · comedor, cortinas, compuertas, zona lavadora, pesaje, estacionamiento, montacargas, baño. Palet semanal.</p>
+        </div>
+        <div class="info-card">
+            <i class="fas fa-chart-line" style="color:#2C3E50;"></i>
+            <h4 style="margin: 8px 0 6px;">Turno Noche Especialidades</h4>
+            <p style="font-size: 0.8rem;">22:30 baldeo MP → producción → despacho · G limpia smipaks, H barre trailers · luego baño y basura · <strong>➕ Mensual: lavado total tachos materia prima y producción.</strong></p>
+        </div>
+    </div>
+
+    <!-- Footer de frecuencias y procedimientos -->
+    <div class="footer-note">
+        <div><i class="fas fa-clipboard-list"></i> <strong>Resumen de frecuencias obligatorias</strong></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.4rem;">
+            <span><i class="fas fa-recycle"></i> Tachos residuos sólidos: 2 veces/semana (C)</span>
+            <span><i class="fas fa-utensils"></i> Paredes externas comedor: 2 veces/mes (C)</span>
+            <span><i class="fas fa-pallet"></i> Lavado de palet: 1 vez/semana (E-F)</span>
+            <span><i class="fas fa-trash-restore"></i> <strong>Tachos MP y producción: 1 vez al mes (Turno Noche - G/H)</strong></span>
+            <span><i class="fas fa-hand-sparkles"></i> Cortinas/paredes despacho: según suciedad</span>
+        </div>
+        <div style="font-size: 0.7rem; margin-top: 0.6rem; width: 100%; text-align: center; border-top: 1px dashed #cddfe7; padding-top: 0.8rem;">
+            <i class="fas fa-check-circle"></i> Procedimiento auditado | Personal capacitado en técnicas de desinfección | Rotación de tareas garantiza cobertura total 24/7
+        </div>
+    </div>
+</div>
+</body>
+</html>
